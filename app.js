@@ -1,25 +1,39 @@
 const fs = require('fs').promises;
 const wattpad = require('./wattpad');
-const logging = require('./logging');
 const Table = require('cli-table');
+const inquirer = require('inquirer');
 
 (async () => {
+	const answers = await inquirer.prompt([
+		{name: 'query', message: 'Search query:'},
+		{name: 'mature', message: 'Show mature content:', type:'list', choices: ['yes', 'no']},
+		{name: 'minParts', message: 'Minimum parts', type:'number'},
+		{name: 'maxParts', message: 'Maximum parts:', type:'number'},
+		{name: 'fromDate', message: 'Earliest published date (DD/MM/YYYY):'},
+		{name: 'toDate', message: 'Latest published date (DD/MM/YYYY):'},
+		{name: 'minReadCount', message: 'Minimum views:'},
+		{name: 'maxReadCount', message: 'Maximum views:'},
+	])
+	console.log('\nStarting search...')
+
 	const query = {
-		query: 'sherlock',
-		mature: true,
-		minParts: 20,
-		maxParts: 50,
+		query: answers.query,
+		mature: answers.mature == 'yes',
+		minParts: answers.minParts,
+		maxParts: answers.maxParts,
 		limit: 50
 	}
 
 	const filter = wattpad.storyFilter({
-		fromDate: new Date(2012,0,1),
-		toDate: new Date(2015,0,1),
-		minReadCount: 50000,
-		maxReadCount: 80000
+		fromDate: Date.parse(answers.fromDate),
+		toDate: Date.parse(answers.toDate),
+		minReadCount: answers.minReadCount,
+		maxReadCount: answers.maxReadCount
 	})
 
 	const stories = await wattpad.completeSearch(query, filter)
+
+	console.log(`Done! Found ${stories.length} stories`)
 
 	const table = new Table({
 		head: ['author', 'title', 'published', 'views']

@@ -1,6 +1,5 @@
 const fetch = require('node-fetch')
 const querystring = require('querystring')
-const logging = require('./logging')
 
 const BASE_URL = 'https://api.wattpad.com/v4'
 const STORY_SEARCH = '/search/stories'
@@ -21,7 +20,7 @@ const singleSearch = async (query) => {
 	const data = await response.json()
 
 	var offset = query.offset || 0
-	logging.info('wattpad-singleSearch', `Searched stories ${offset}-${offset + query.limit - 1}/${data.total}`)
+	console.log(`Searched stories ${offset}-${offset + query.limit - 1}/${data.total}`)
 
 	return {
 		total: data.total,
@@ -45,14 +44,13 @@ const completeSearch = async (query, filter) => {
 		if (!result.offset) break
 
 		if (result.offset > MAXIMUM_OFFSET) {
-			logging.warn('wattpad-completeSearch', 'Maximum offset reached')
+			throw Error('maximum offset reached')
 			break
 		}
 
 		currentQuery.offset = result.offset
 	}
 
-	logging.success('wattpad-completeSearch', `Found ${stories.length} stories`)
 	return stories
 }
 
