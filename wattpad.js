@@ -6,7 +6,7 @@ const BASE_URL = 'https://api.wattpad.com/v4'
 const STORY_SEARCH = '/search/stories'
 const MAXIMUM_OFFSET = 9000
 
-// @param query: {query: string, mature: boolean, category: integer, minParts: integer, maxParts: integer, offset: integer, limit: integer}
+// @param query: {{query: string, mature: boolean, category: integer, minParts: integer, maxParts: integer, offset: integer, limit: integer}}
 const singleSearch = async (query) => {
 	if (query.limit > 99) throw Error('Limit must be <100')
 
@@ -30,8 +30,8 @@ const singleSearch = async (query) => {
 	}
 }
 
-// @param query: {query: string, mature: boolean, category: integer, minParts: integer, maxParts: integer, offset: integer, limit: integer}
-// @param filter: function
+// @param query: {{query: string, mature: boolean, category: integer, minParts: integer, maxParts: integer, offset: integer, limit: integer}}
+// @param filter: {function}
 const completeSearch = async (query, filter) => {
 	var stories = []
 	var currentQuery = query
@@ -56,7 +56,7 @@ const completeSearch = async (query, filter) => {
 	return stories
 }
 
-// @param parameters: {fromDate: Date, toDate: Date, minReadCount: integer, maxReadCount: integer}
+// @param parameters: {{fromDate: Date, toDate: Date, minReadCount: integer, maxReadCount: integer}}
 const storyFilter = (parameters) => {
 	return (story) => {
 		const published = Date.parse(story.lastPublishedPart.createDate)
