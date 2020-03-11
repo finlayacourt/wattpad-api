@@ -1,4 +1,3 @@
-const fs = require('fs').promises;
 const wattpad = require('./wattpad');
 const Table = require('cli-table');
 const inquirer = require('inquirer');
